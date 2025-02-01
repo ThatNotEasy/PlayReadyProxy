@@ -1,6 +1,6 @@
 # PlayReady-Proxy
 
-`PlayReady-Proxy` is based on [WidevineProxy2](https://github.com/DevLarLey/WidevineProxy2) and has been re-encoded to support `PlayReady DRM`, utilizing some code from [WidevineProxy2](https://github.com/DevLarLey/WidevineProxy2) for reuse in `PlayReady DRM`. Additionally, new features such as [DDownloader](https://pypi.org/project/DDownloader/), proxy support, and others (still in development)
+`PlayReady-Proxy` is based on [WidevineProxy2](https://github.com/DevLarLey/WidevineProxy2) and has been re-code to support `PlayReady DRM`, utilizing some code from [WidevineProxy2](https://github.com/DevLarLey/WidevineProxy2) for reuse in `PlayReady DRM`. Additionally, new features such as [DDownloader](https://pypi.org/project/DDownloader/), proxy support, and others (still in development)
 
 ## Installation
 - Go to this repository [PlayReady-ProxyAPI](https://github.com/ThatNotEasy/PlayReady-ProxyAPI) and perform a `git clone`
