@@ -4,7 +4,7 @@
 
 ## How To Use?
 - Load config templates for Remote CDM, See [example](https://github.com/ThatNotEasy/PlayReady-Proxy/blob/main/config/local.json)
-- Go to this repository [PlayReady-ProxyAPI](https://github.com/ThatNotEasy/PlayReady-ProxyAPI)
+- Go to this repository [PlayReadyProxy-API](https://github.com/ThatNotEasy/PlayReadyProxy-API)
 
 ## Footprints Notes:
 - For your information, this extension can only be used with `PlayReady-ProxyAPI` because some features are still in development. Additionally, certain services do not provide proper keys by default, meaning they require a `unique PSSH`.
