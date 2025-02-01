@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playready Proxy Settings</title>
+    <script type="module" src="panel.js" defer></script>
+    <link rel="stylesheet" href="panel.css" />
+</head>
+<body class="dark-mode" style="min-width: 200px">
+    <div class="header">
+        <img
+            src="../images/icon-128.png"
+            alt="PlayreadyProxy Icon"
+            width="64"
+        />
+        <img
+            src="../images/proxy_text.png"
+            alt="ProxyText"
+            width="200"
+        />
+    </div>
+    
+    <fieldset>
+        <legend>Settings</legend>
+        <div id="settings">
+            <!-- Enabled -->
+            <div>
+                <input type="checkbox" id="enabled" />
+                <label for="enabled"> Enabled</label>
+            </div>
+            <!-- Dark mode -->
+        </div>
+        
+        <fieldset id="remote">
+            <legend>Remote CDM</legend>
+            <button type="button" id="remoteInput">
+                Choose Config
+            </button>
+            <button type="button" id="remoteRemove">Remove</button>
+            <button type="button" id="remoteDownload">Download</button><br />
+            <label for="remote-combobox">
+                Select Config:
+                <select id="remote-combobox"></select>
+            </label>
+        </fieldset>
+
+        <fieldset id="local">
+            <legend>Local CDM</legend>
+            <button type="button" id="localInput">
+                Choose Device
+            </button>
+            <button type="button" id="localRemove">Remove</button>
+            <button type="button" id="localDownload">Download</button><br />
+            <label for="local-combobox">
+                Select Device:
+                <select id="local-combobox"></select>
+            </label>
+        </fieldset>
+
+        <fieldset id="proxy-settings">
+            <legend>Proxy Settings</legend>
+            <div>
+                <input type="checkbox" id="enable-proxy" />
+                <label for="enable-proxy">Enable Proxy</label>
+            </div>
+            <div id="proxy-config" style="display: none;">
+                <label for="proxy-url">Proxy URL: </label>
+                <input type="text" class="text-box" id="proxy-url" placeholder="http://your.proxy.url:port" />
+            </div>
+        </fieldset>
+
+        <fieldset id="command-options">
+            <legend>Command Options</legend>
+            <div>
+                <input type="checkbox" id="use-shaka" /> <!-- Unchecked by default -->
+                <label for="use-shaka"> Use Shaka Packager</label>
+            </div>
+            <div>
+                <input type="checkbox" id="use-ddownloader" checked /> <!-- Default checked -->
+                <label for="use-ddownloader"> Use DDownloader</label>
+            </div>
+            <div>
+                <label for="downloader-name">Executable name: </label>
+                <input type="text" class="text-box" id="downloader-name" />
+            </div>
+        </fieldset>
+
+        <button type="button" id="export">Export Logs</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>Keys</legend>
+        <button type="button" id="clear">Clear</button>
+        <div id="key-container"></div>
+    </fieldset>
+</body>
+</html>
