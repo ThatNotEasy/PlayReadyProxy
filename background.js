@@ -2,7 +2,6 @@ import {
     uint8ArrayToBase64,
     SettingsManager,
     RemoteCDMManager,
-    LocalCDMManager,
     PSSHFromKID,
     stringToUTF16LEBytes,
 } from "./util.js";
