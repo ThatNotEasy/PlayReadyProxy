@@ -20,20 +20,20 @@
         "128": "images/icon-128.png"
     },
     "background": {
-        "service_worker": "background.js",
+        "service_worker": "modules/background.js",
         "type": "module"
     },
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["message_proxy.js"],
+            "js": ["modules/message_proxy.js"],
             "run_at": "document_start",
             "world": "ISOLATED",
             "all_frames": true
         },
         {
             "matches": ["<all_urls>"],
-            "js": ["content_script.js"],
+            "js": ["modules/content_script.js"],
             "run_at": "document_start",
             "world": "MAIN",
             "all_frames": true
@@ -41,7 +41,7 @@
     ],
     "browser_specific_settings": {
         "gecko": {
-            "id": "ThatNotEasy@Deny@DevLARLEY",
+            "id": "ThatNotEasy@DevLARLEY",
             "strict_min_version": "58.0"
         }
     }

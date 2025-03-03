@@ -3,7 +3,7 @@ import {
     stringToUint8Array,
     RemoteCDMManager,
     SettingsManager,
-} from "../util.js";
+} from "../modules/util.js";
 
 const key_container = document.getElementById("key-container");
 
