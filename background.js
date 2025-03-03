@@ -12,6 +12,25 @@ let requests = new Map();
 const sessions = new Map();
 let logs = [];
 
+function decodeBase64(str) {
+    try {
+        return atob(str);
+    } catch (e) {
+        console.error("Error decoding base64:", e);
+        return "";
+    }
+}
+
+function parseXML(xmlStr) {
+    try {
+        const parser = new DOMParser();
+        return parser.parseFromString(xmlStr, "text/xml");
+    } catch (e) {
+        console.error("Error parsing XML:", e);
+        return null;
+    }
+}
+
 chrome.webRequest.onBeforeSendHeaders.addListener(
     function (details) {
         if (details.method === "GET") {
@@ -44,8 +63,17 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 
 
-async function generateChallengeRemote(body, sendResponse) {
+async function generateChallengeRemote(body, sendResponse, tab_url) {
     try {
+        console.log("[PlayReadyProxy] generateChallengeRemote called with tab_url:", tab_url);
+        
+        // Verifica che tab_url sia definito
+        if (!tab_url) {
+            console.error("[PlayReadyProxy] No tab_url provided, cannot store session");
+            sendResponse(body);
+            return;
+        }
+
         // Decode the base64-encoded body into a binary string
         const binaryString = decodeBase64(body);
         const byteArray = new Uint8Array(binaryString.length);
@@ -140,6 +168,10 @@ async function generateChallengeRemote(body, sendResponse) {
         }
 
         console.log("[PlayReadyProxy]", "SESSION_ID", session_id);
+        
+        // Memorizza la sessione per il tab_url corrente
+        console.log("[PlayReadyProxy] Storing session_id", session_id, "for tab_url", tab_url);
+        sessions.set(tab_url, session_id);
 
         const challenge = await remote_cdm.get_license_challenge(session_id, pssh);
 
@@ -164,7 +196,20 @@ async function generateChallengeRemote(body, sendResponse) {
 
 async function parseLicenseRemote(body, sendResponse, tab_url) {
     try {
+        console.log("[PlayReadyProxy] parseLicenseRemote called with tab_url:", tab_url);
+        
+        // Verifica che tab_url sia definito
+        if (!tab_url) {
+            console.error("[PlayReadyProxy] No tab_url provided, cannot retrieve session");
+            sendResponse();
+            return;
+        }
+        
         const license_b64 = body; // License message is already Base64-encoded
+
+        // Debug delle sessioni disponibili
+        console.log("[PlayReadyProxy] Current sessions:", 
+                  [...sessions.entries()].map(([url, id]) => ({ url, id })));
 
         // Fetch the selected remote CDM and load it
         const selected_remote_cdm_name = await RemoteCDMManager.getSelectedRemoteCDM();
@@ -186,14 +231,19 @@ async function parseLicenseRemote(body, sendResponse, tab_url) {
         }
 
         const remote_cdm = RemoteCdm.from_object(remoteCdmObj);
-        const session_id = await remote_cdm.open();
-        if (!session_id) {
-            console.error("[PlayReadyProxy] Failed to open session.");
+        
+        // Verifica se esiste già una sessione
+        if (!sessions.has(tab_url)) {
+            console.error("[PlayReadyProxy] No previous session found for URL:", tab_url);
+            
+            // Non possiamo proseguire senza prima aver fatto il challenge
+            console.error("[PlayReadyProxy] Cannot process license without challenge first");
             sendResponse();
             return;
         }
-
-        console.log("[PlayReadyProxy]", "SESSION_ID", session_id);
+        
+        const session_id = sessions.get(tab_url);
+        console.log("[PlayReadyProxy] Using existing SESSION_ID", session_id, "for tab_url", tab_url);
 
         // Fetch keys using get_keys(session_id, license_b64)
         const returned_keys = await remote_cdm.get_keys(session_id, license_b64);
@@ -223,6 +273,7 @@ async function parseLicenseRemote(body, sendResponse, tab_url) {
 
         // Close the session after key retrieval
         await remote_cdm.close(session_id);
+        sessions.delete(tab_url);
 
         sendResponse();
     } catch (error) {
@@ -234,6 +285,7 @@ async function parseLicenseRemote(body, sendResponse, tab_url) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     (async () => {
         const tab_url = sender.tab ? sender.tab.url : null;
+        console.log("[PlayReadyProxy] Received message type:", message.type, "for tab_url:", tab_url);
 
         switch (message.type) {
             case "REQUEST":
@@ -251,7 +303,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     if (message.body) {
                         await generateChallengeRemote(
                             message.body,
-                            sendResponse
+                            sendResponse,
+                            tab_url  // Passa tab_url come terzo parametro
                         );
                     }
                 }
@@ -268,6 +321,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     await parseClearKey(message.body, sendResponse, tab_url);
                     return;
                 } catch (e) {
+                    console.log("[PlayReadyProxy] parseClearKey failed, trying parseLicenseRemote", e);
                     await parseLicenseRemote(
                         message.body,
                         sendResponse,
@@ -297,6 +351,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             case "CLEAR":
                 logs = [];
                 manifests.clear();
+                sessions.clear(); // Aggiungi questo per pulire anche le sessioni
                 break;
             case "MANIFEST":
                 const parsed = JSON.parse(message.body);
