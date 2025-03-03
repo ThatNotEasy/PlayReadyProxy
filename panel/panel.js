@@ -1,6 +1,5 @@
 import {
     AsyncLocalStorage,
-    base64toUint8Array,
     stringToUint8Array,
     RemoteCDMManager,
     SettingsManager,
@@ -219,11 +218,21 @@ chrome.storage.onChanged.addListener(async (changes, areaName) => {
 
 function checkLogs() {
     chrome.runtime.sendMessage({ type: "GET_LOGS" }, (response) => {
-        if (response) {
-            response.forEach(async (result) => {
-                await appendLog(result);
-            });
+        console.log("[DEBUG] Received logs response:", response);
+
+        if (!response) {
+            console.error("[ERROR] No response received from GET_LOGS.");
+            return;
         }
+
+        if (!Array.isArray(response)) {
+            console.error("[ERROR] Unexpected response format. Expected an array but got:", response);
+            return;
+        }
+
+        response.forEach(async (result) => {
+            await appendLog(result);
+        });
     });
 }
 

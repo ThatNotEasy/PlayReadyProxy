@@ -435,3 +435,23 @@ export function hexStringToUint8Array(hexString) {
     }
     return bytes;
 }
+
+export function decodeBase64(base64String) {
+    try {
+        const decodedData = atob(base64String);
+        return decodedData;
+    } catch (error) {
+        console.error("Invalid Base64 string", error);
+        return null;
+    }
+}
+
+function parseXML(xmlStr) {
+    try {
+        const parser = new DOMParser();
+        return parser.parseFromString(xmlStr, "text/xml");
+    } catch (e) {
+        console.error("Error parsing XML:", e);
+        return null;
+    }
+}

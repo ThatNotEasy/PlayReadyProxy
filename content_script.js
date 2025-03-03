@@ -21,10 +21,7 @@ function emitAndWaitForResponse(type, data) {
         const responseHandler = (event) => {
             const { detail } = event;
             if (detail.substring(0, 7) === requestId) {
-                document.removeEventListener(
-                    "responseReceived",
-                    responseHandler
-                );
+                document.removeEventListener("responseReceived", responseHandler);
                 resolve(detail.substring(7));
             }
         };
@@ -37,6 +34,7 @@ function emitAndWaitForResponse(type, data) {
             },
         });
         document.dispatchEvent(requestEvent);
+        console.log(`[ContentScript] Dispatched event: ${type}`);
     });
 }
 
@@ -146,17 +144,12 @@ class Evaluator {
                                                 oldChallenge
                                             );
                                         if (oldChallenge !== newChallenge) {
-                                            // Playback will fail if the challenges are the same (aka. the background script
-                                            // returned the same challenge because the addon is disabled), but I still
-                                            // override the challenge anyway, so check beforehand (in base64 form)
                                             newBody =
                                                 base64toUint8Array(
                                                     newChallenge
                                                 );
                                         }
                                     } else {
-                                        // trick EME Logger
-                                        // better suggestions for avoiding EME Logger interference are welcome
                                         await emitAndWaitForResponse(
                                             "REQUEST",
                                             ""
@@ -298,11 +291,9 @@ XMLHttpRequest.prototype.send = function (postData) {
                     body = this.responseText ?? this.response;
                     break;
                 case "json":
-                    // TODO: untested
                     body = JSON.stringify(this.response);
                     break;
                 case "arraybuffer":
-                    // TODO: untested
                     if (this.response.byteLength) {
                         const response = new Uint8Array(this.response);
                         body = uint8ArrayToString(
@@ -312,9 +303,6 @@ XMLHttpRequest.prototype.send = function (postData) {
                             ])
                         );
                     }
-                    break;
-                case "document":
-                    // todo
                     break;
                 case "blob":
                     body = await this.response.text();

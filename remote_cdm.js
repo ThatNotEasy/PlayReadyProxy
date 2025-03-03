@@ -88,9 +88,9 @@ export class RemoteCdm {
         console.log("[PlayReadyProxy] Requesting License Challenge...");
         console.log("[PlayReadyProxy] SESSION_ID:", session_id);
         console.log("[PlayReadyProxy] PSSH:", pssh);
-
+    
         const license_request = await this.fetch_with_proxy(
-            `${this.host}/${this.device_name}/get_challenge`,
+            `${this.host}/api/playready/${this.device_name}/get_challenge`,
             {
                 method: "POST",
                 headers: {
@@ -103,11 +103,11 @@ export class RemoteCdm {
                 }),
             }
         );
-
+    
         console.log("[PlayReadyProxy]", "REMOTE_CDM", "GET_LICENSE_CHALLENGE", license_request.status);
         const response = await license_request.json();
         console.log("[PlayReadyProxy] License Challenge Response:", response);
-
+    
         return response.responseData.challenge_b64;
     }
 
