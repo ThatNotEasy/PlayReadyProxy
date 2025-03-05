@@ -18,7 +18,7 @@ export class RemoteCdm {
     }
 
     get_name() {
-        return `${this.device_name} ${this.host}/`;
+        return `[${this.device_name}] ${this.host}/`;
     }
 
     async fetch_with_proxy(url, options) {

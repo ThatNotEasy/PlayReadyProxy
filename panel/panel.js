@@ -22,7 +22,6 @@ export_button.addEventListener("click", async function () {
     );
 });
 
-
 // ================ Remote CDM ================
 document.getElementById("remoteInput").addEventListener("click", () => {
     chrome.runtime.sendMessage({ type: "OPEN_PICKER" });
@@ -65,16 +64,12 @@ local_combobox.addEventListener("change", async function () {
         local_combobox.options[local_combobox.selectedIndex].text
     );
 });
-// ============================================
 
 // ====================== Proxy Settings ======================
-
-// Get elements
 const enableProxy = document.getElementById("enable-proxy");
 const proxyConfig = document.getElementById("proxy-config");
 const proxyUrlInput = document.getElementById("proxy-url");
 
-// Enable or disable proxy settings
 enableProxy.addEventListener("change", async function () {
     const isProxyEnabled = enableProxy.checked;
     if (isProxyEnabled) {
@@ -86,12 +81,10 @@ enableProxy.addEventListener("change", async function () {
     await SettingsManager.setProxyEnabled(isProxyEnabled);
 });
 
-// Save proxy URL
 proxyUrlInput.addEventListener("input", async function () {
     const proxyUrl = proxyUrlInput.value;
     await SettingsManager.saveProxyConfig(proxyUrl);  // Save the proxy config
 });
-
 
 // ================ Command Options ================
 const use_shaka = document.getElementById("use-shaka");
@@ -100,8 +93,8 @@ use_shaka.addEventListener("change", async function () {
 });
 
 const use_ddownloader = document.getElementById("use-ddownloader");
-use_shaka.addEventListener("change", async function () {
-    await SettingsManager.saveUseShakaPackager(use_ddownloader.checked);
+use_ddownloader.addEventListener("change", async function () {
+    await SettingsManager.saveUseDDownloader(use_ddownloader.checked);
 });
 
 const downloader_name = document.getElementById("downloader-name");
@@ -109,7 +102,6 @@ downloader_name.addEventListener("input", async function (event) {
     console.log("input change", event);
     await SettingsManager.saveExecutableName(downloader_name.value);
 });
-// =================================================
 
 // ================ Keys ================
 const clear = document.getElementById("clear");
@@ -124,8 +116,7 @@ async function createCommand(json, key_string) {
         .map(([key, value]) => `-H "${key}: ${value.replace(/"/g, "'")}"`)
         .join(" ");
     
-    // Assuming `metadata.url` is the URL to use, and output is derived from `metadata.id` or some other field
-    const output = metadata.id || "output"; // Change this according to how you want to generate the output name.
+    const output = metadata.id || "output";
     
     return `DDownloader -u "${metadata.url}" ${header_string} ${key_string} -o "${output}"`;
 }
@@ -143,7 +134,6 @@ async function appendLog(result) {
             <label class="always-visible right-bound">
                 URL:<input type="text" class="text-box" value="${result.url}">
             </label>
-            <label class="expanded-only right-bound">
             <label class="expanded-only right-bound key-copy">
                 <a href="#" title="Click to copy">Keys:</a><input type="text" class="text-box" value="${key_string}">
             </label>
@@ -245,9 +235,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         await RemoteCDMManager.getSelectedRemoteCDM()
     );
     checkLogs();
-});
 
-document.addEventListener("DOMContentLoaded", async function () {
     const isProxyEnabled = await SettingsManager.getProxyEnabled();
     enableProxy.checked = isProxyEnabled;
     if (isProxyEnabled) {
@@ -257,12 +245,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const savedProxyUrl = await SettingsManager.getProxy();
     const savedProxyPort = await SettingsManager.getProxyPort();
     
-    // Combine the proxy URL and port (if available)
     if (savedProxyUrl && savedProxyPort) {
         proxyUrlInput.value = `${savedProxyUrl}:${savedProxyPort}`;
     } else {
         proxyUrlInput.value = savedProxyUrl || '';
     }
 });
-
-// ======================================

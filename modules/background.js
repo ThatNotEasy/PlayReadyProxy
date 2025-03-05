@@ -247,7 +247,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 break;
             case "OPEN_PICKER_LOCAL":
                 chrome.windows.create({
-                    url: "picker/filePickerLocal.html",
+                    url: "../picker/filePickerLocal.html",
                     type: "popup",
                     width: 300,
                     height: 200,
@@ -255,7 +255,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 break;
             case "OPEN_PICKER":
                 chrome.windows.create({
-                    url: "picker/filePicker.html",
+                    url: "../picker/filePicker.html",
                     type: "popup",
                     width: 300,
                     height: 200,

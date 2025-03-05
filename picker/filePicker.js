@@ -1,4 +1,4 @@
-import { SettingsManager } from "../../util.js";
+import { SettingsManager } from "../modules/util.js";
 
 document
     .getElementById("fileInput")
