@@ -46,7 +46,7 @@ export class RemoteCdm {
 
     async open() {
         const open_request = await this.fetch_with_proxy(
-            `${this.host}/dev/playready/${this.device_name}/open`,
+            `${this.host}/api/playready/${this.device_name}/open`,
             {
                 method: "GET",
                 headers: { "X-API-KEY": this.secret },
@@ -59,7 +59,7 @@ export class RemoteCdm {
 
     async close(session_id) {
         await this.fetch_with_proxy(
-            `${this.host}/dev/playready/${this.device_name}/close/${session_id}`,
+            `${this.host}/api/playready/${this.device_name}/close/${session_id}`,
             {
                 method: "GET",
                 headers: { "X-API-KEY": this.secret },
@@ -69,7 +69,7 @@ export class RemoteCdm {
 
     async get_license_challenge(session_id, pssh) {
         const license_request = await this.fetch_with_proxy(
-            `${this.host}/dev/playready/${this.device_name}/get_challenge`,
+            `${this.host}/api/playready/${this.device_name}/get_challenge`,
             {
                 method: "POST",
                 headers: {
@@ -89,7 +89,7 @@ export class RemoteCdm {
 
     async get_keys(session_id, license_b64) {
         const keys_request = await this.fetch_with_proxy(
-            `${this.host}/dev/playready/${this.device_name}/get_keys`,
+            `${this.host}/api/playready/${this.device_name}/get_keys`,
             {
                 method: "POST",
                 headers: {
