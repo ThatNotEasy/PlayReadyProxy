@@ -11,7 +11,7 @@
    - Open and modify the `config.ini` file with the appropriate settings. For example:
 
     
-    [PLAYREADY]
+    [CDM]
     DEVICE_FILE = device/myprd_file.prd
     DEVICE_NAME = NVIDIA
     
